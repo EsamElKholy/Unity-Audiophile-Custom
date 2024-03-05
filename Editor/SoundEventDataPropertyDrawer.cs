@@ -181,13 +181,6 @@ namespace PixelDust.Audiophile
                 position.y += propHeight + EditorGUIUtility.standardVerticalSpacing;
             }
 
-            {
-                var groupProp = standardSettingsProp.FindPropertyRelative("group");
-                EditorGUI.PropertyField(position, groupProp);
-                var propHeight = EditorGUI.GetPropertyHeight(groupProp, true);
-                position.y += propHeight + EditorGUIUtility.standardVerticalSpacing;
-            }          
-
             //var groups = AudiophileEditor.AudiophileEditorUtility.GetMixerGroups();
             //{
             //    var groupProp = standardSettingsProp.FindPropertyRelative("group");

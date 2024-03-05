@@ -13,7 +13,7 @@ namespace PixelDust.Audiophile
 
         [SerializeField]
         private string soundId;
-        public string SoundId => soundId;
+        public string SoundId {get { return soundId; } set { soundId = value; } }
 
         public AudiophilePlayResult Play()
         {
