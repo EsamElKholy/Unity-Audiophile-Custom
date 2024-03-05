@@ -199,6 +199,7 @@ namespace PixelDust.Audiophile
             if (audiophilePlayer == null) { Debug.Log("Pool overflowed."); return null; }
 
             audiophilePlayer.transform.position = position.HasValue ? position.Value : Vector3.zero;
+            audiophilePlayer.audioSource.priority = soundEventData.StandardSettings.Priority;
             audiophilePlayer.SetFollowTransform(followTransform);
             audiophilePlayer.Play(soundEventData, delay, id);
 

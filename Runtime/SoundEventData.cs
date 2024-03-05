@@ -17,7 +17,7 @@ namespace PixelDust.Audiophile
 
         [SerializeField]
         private string soundId;
-        public string SoundId => soundId;
+        public string SoundId { get { return soundId; } set { soundId = value; } }
 
         [SerializeField]
         private StandardSettings standardSettings = new StandardSettings();
@@ -88,6 +88,11 @@ namespace PixelDust.Audiophile
         private float maxVolume = 1;
         public float MaxVolume => maxVolume;
 
+        [Range(0, 256)]
+        [SerializeField]
+        private int priority = 128;
+        public int Priority => priority;
+
         [SerializeField]
         private UnityEngine.Audio.AudioMixerGroup group;
         public UnityEngine.Audio.AudioMixerGroup Group => group;
@@ -98,6 +103,7 @@ namespace PixelDust.Audiophile
             this.maxVolume = 1;
             this.minPitch = 1;
             this.maxPitch = 1;
+            this.priority = 128;
         }
     }
 

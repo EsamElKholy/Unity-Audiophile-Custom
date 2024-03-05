@@ -87,6 +87,7 @@ namespace PixelDust.Audiophile
 
         private void OnStopped()
         {
+            audiophilePlayer.audioSource.priority = 128;
             audiophilePlayer = null;
         }
 

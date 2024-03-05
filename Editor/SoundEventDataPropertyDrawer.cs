@@ -171,12 +171,22 @@ namespace PixelDust.Audiophile
             var maxPitchProp = standardSettingsProp.FindPropertyRelative("maxPitch");
             DrawRangeSlider(ref position, new GUIContent("Pitch"), minPitchProp, maxPitchProp, -3, 3, AudiophileProjectSettings.Units.Linear);
 
+            var priorityProp = standardSettingsProp.FindPropertyRelative("priority");
+            DrawIntSlider(ref position, new GUIContent("Priority"), priorityProp, 0, 256);
+
             {
                 var groupProp = standardSettingsProp.FindPropertyRelative("group");
                 EditorGUI.PropertyField(position, groupProp);
                 var propHeight = EditorGUI.GetPropertyHeight(groupProp, true);
                 position.y += propHeight + EditorGUIUtility.standardVerticalSpacing;
             }
+
+            {
+                var groupProp = standardSettingsProp.FindPropertyRelative("group");
+                EditorGUI.PropertyField(position, groupProp);
+                var propHeight = EditorGUI.GetPropertyHeight(groupProp, true);
+                position.y += propHeight + EditorGUIUtility.standardVerticalSpacing;
+            }          
 
             //var groups = AudiophileEditor.AudiophileEditorUtility.GetMixerGroups();
             //{
@@ -282,6 +292,67 @@ namespace PixelDust.Audiophile
             {
                 maxProp.floatValue = maxValue;
             }
+
+            position.y += ExtraEditorGUIUtility.SingleLineHeight();
+            height += ExtraEditorGUIUtility.SingleLineHeight();
+            return height;
+        }
+
+        internal static float DrawIntSlider(ref Rect position, GUIContent label, SerializedProperty value, int min, int max)
+        {
+            var height = 0f;
+            var val = value.intValue;
+            int floatFieldWidth = 40;
+            int padding = 0;
+
+            Rect labelRect = new Rect(position);
+            labelRect.width = EditorGUIUtility.labelWidth;                      
+
+            EditorGUI.LabelField(labelRect, label);
+
+            Rect propertyRect = new Rect(position);
+            propertyRect.x += EditorGUIUtility.labelWidth;
+            propertyRect.width -= EditorGUIUtility.labelWidth;
+
+            Rect sliderRect = new Rect(propertyRect.x + (floatFieldWidth + padding), propertyRect.y, propertyRect.width - (floatFieldWidth + padding) * 2, propertyRect.height);
+
+            EditorGUI.BeginChangeCheck();
+            {
+                val = EditorGUI.IntSlider(sliderRect, val, min, max);
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                value.intValue = val;
+            }
+            //if (units == AudiophileProjectSettings.Units.Linear)
+            //{
+            //    Rect minFieldRect = new Rect(propertyRect.x, propertyRect.y, floatFieldWidth, propertyRect.height);
+            //    EditorGUI.showMixedValue = minProp.hasMultipleDifferentValues;
+            //    minValue = EditorGUI.FloatField(minFieldRect, minValue, EditorStyles.miniBoldLabel);
+            //    EditorGUI.showMixedValue = false;
+
+            //    EditorGUI.showMixedValue = maxProp.hasMultipleDifferentValues;
+            //    Rect maxFieldRect = new Rect((propertyRect.x + propertyRect.width) - (floatFieldWidth), propertyRect.y, floatFieldWidth, propertyRect.height);
+            //    maxValue = EditorGUI.FloatField(maxFieldRect, maxValue, EditorStyles.miniBoldLabel);
+            //    EditorGUI.showMixedValue = false;
+            //}
+            //else if (units == AudiophileProjectSettings.Units.Decibels)
+            //{
+            //    Rect minFieldRect = new Rect(propertyRect.x, propertyRect.y, floatFieldWidth, propertyRect.height);
+            //    minValue = AudioHelper.DecibelToLinear(EditorGUI.FloatField(minFieldRect, AudioHelper.LinearToDecibel(minValue), EditorStyles.miniBoldLabel));
+
+            //    Rect maxFieldRect = new Rect((propertyRect.x + propertyRect.width) - (floatFieldWidth), propertyRect.y, floatFieldWidth, propertyRect.height);
+            //    maxValue = AudioHelper.DecibelToLinear(EditorGUI.FloatField(maxFieldRect, AudioHelper.LinearToDecibel(maxValue), EditorStyles.miniBoldLabel));
+            //}
+
+            //if (minValue != minProp.floatValue)
+            //{
+            //    minProp.floatValue = minValue;
+            //}
+            //if (maxValue != maxProp.floatValue)
+            //{
+            //    maxProp.floatValue = maxValue;
+            //}
 
             position.y += ExtraEditorGUIUtility.SingleLineHeight();
             height += ExtraEditorGUIUtility.SingleLineHeight();
