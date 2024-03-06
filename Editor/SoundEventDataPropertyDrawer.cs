@@ -208,6 +208,13 @@ namespace PixelDust.Audiophile
                 position.y += propHeight + EditorGUIUtility.standardVerticalSpacing;
             }
 
+            {
+                var persist = data.FindPropertyRelative("persist");
+                EditorGUI.PropertyField(position, persist, true);
+                var propHeight = EditorGUI.GetPropertyHeight(persist, true);
+                position.y += propHeight + EditorGUIUtility.standardVerticalSpacing;
+            }
+
             return position;
         }
 

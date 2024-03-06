@@ -16,6 +16,10 @@ namespace PixelDust.Audiophile
         public bool Loop => loop;
 
         [SerializeField]
+        private bool persist = false;
+        public bool Persist => persist;
+
+        [SerializeField]
         private string soundId;
         public string SoundId { get { return soundId; } set { soundId = value; } }
 

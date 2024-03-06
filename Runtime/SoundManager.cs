@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace PixelDust.Audiophile
@@ -195,7 +196,16 @@ namespace PixelDust.Audiophile
             }
 
             AudiophilePlayer audiophilePlayer;
-            audiophilePlayer = GetAudioPhilePlayer();
+
+            if (soundEventData.Persist)
+            {
+                audiophilePlayer = GetPersistentAudiophilePlayer(soundEventData.SoundId);
+            }
+            else
+            {
+                audiophilePlayer = GetAudioPhilePlayer();
+            }
+
             if (audiophilePlayer == null) { Debug.Log("Pool overflowed."); return null; }
 
             audiophilePlayer.transform.position = position.HasValue ? position.Value : Vector3.zero;
@@ -218,6 +228,7 @@ namespace PixelDust.Audiophile
 
         
         private AudiophilePlayer[] audiophilePlayers;
+        private Dictionary<string, AudiophilePlayer> persistentPlayers = new();
         // Collection checks will throw errors if we try to release an item that is already in the pool.
         
         [SerializeField]
@@ -258,6 +269,21 @@ namespace PixelDust.Audiophile
             {
                 audiophilePlayers[i] = MakeSource($"AudioSource_{i}");
             }
+
+            SceneManager.activeSceneChanged += ActiveSceneChanged;
+        }
+
+        private void ActiveSceneChanged(Scene scene1, Scene scene2)
+        {
+            foreach (var item in persistentPlayers) 
+            {
+                if (item.Value.IsPlaying)
+                {
+                    item.Value.Stop();
+                }
+            }
+
+            persistentPlayers.Clear();
         }
 
         private AudiophilePlayer MakeSource(string name)
@@ -279,6 +305,11 @@ namespace PixelDust.Audiophile
         {
             for (int i = 0; i < Instance.audiophilePlayers.Length; i++)
             {
+                if (Instance.persistentPlayers.Values.Contains(Instance.audiophilePlayers[i]))
+                {
+                    continue;
+                }
+
                 if (!Instance.audiophilePlayers[i].IsPlaying)
                 {
                     foreach (var item in playingAudioPhilePlayers.Where(kvp => kvp.Value.Contains(Instance.audiophilePlayers[i])).ToList())
@@ -293,6 +324,20 @@ namespace PixelDust.Audiophile
                 }
             }
             return null;
+        }
+
+        private static AudiophilePlayer GetPersistentAudiophilePlayer(string id) 
+        {
+            if (Instance.persistentPlayers.ContainsKey(id))
+            {
+                return Instance.persistentPlayers[id];
+            }
+
+            var player = GetAudioPhilePlayer();
+
+            Instance.persistentPlayers.Add(id, player);
+
+            return player;
         }
         #endregion
 

@@ -39,17 +39,6 @@ namespace PixelDust.Audiophile
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.update += Update;
 #endif
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += ActiveSceneChanged;
-        }
-
-
-
-        private void ActiveSceneChanged(Scene scene1, Scene scene2)
-        {
-            if(!Persist)
-            {
-                this.Stop();
-            }
         }
 
         public void Play(SoundEventData soundEventData, float delay, string id)
@@ -57,7 +46,7 @@ namespace PixelDust.Audiophile
             seData = soundEventData;
             this.loop = overrideLoop ?? soundEventData.Loop;
             audioSource.loop = false;
-
+            Persist = soundEventData.Persist;
             this.id = id;
 
             audioSource.volume = overrideVolume ?? UnityEngine.Random.Range(soundEventData.StandardSettings.MinVolume, soundEventData.StandardSettings.MaxVolume);
